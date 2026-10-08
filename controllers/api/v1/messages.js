@@ -41,3 +41,39 @@ export const create = async (req, res) => {
       res.status(500).json(result);
     }
 };
+
+export const update = async (req, res) => {
+  try {
+    if (!Message.db.base.isValidObjectId(req.params.id)) {
+      return res.status(400).json({ status: "error", message: "Invalid message ID" });
+    }
+    const message = await Message.findByIdAndUpdate(
+      req.params.id,
+      { $set: { text: req.body.text, username: req.body.username } },
+      { new: true, runValidators: true }
+    );
+    if (!message) {
+      return res.status(404).json({ status: "error", message: "Message not found" });
+    }
+    return res.json({ status: "success", data: { message } });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ status: "error", message: "Could not update message" });
+  }
+};
+
+export const remove = async (req, res) => {
+  try {
+    if (!Message.db.base.isValidObjectId(req.params.id)) {
+      return res.status(400).json({ status: "error", message: "Invalid message ID" });
+    }
+    const message = await Message.findByIdAndDelete(req.params.id);
+    if (!message) {
+      return res.status(404).json({ status: "error", message: "Message not found" });
+    }
+    return res.json({ status: "success", data: { message } });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ status: "error", message: "Could not delete message" });
+  }
+};
