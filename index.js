@@ -1,17 +1,20 @@
-import express from 'express';
-import messagesRouter from "./routes/api/v1/messages.js";
+import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import messagesRouter from "./routes/api/v1/messages.js";
+
+dotenv.config();
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 app.use(express.json());
-
-mongoose.connect('mongodb://localhost:27017/test');
-
 app.use("/api/v1/messages", messagesRouter);
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
+mongoose.connect(process.env.MONGODB)
+  .then(() => console.log("MongoDB connected"))
+  .catch((err) => console.error("MongoDB error:", err));
+
+app.listen(port, "0.0.0.0", () => {
+  console.log(`Server running on port ${port}`);
 });
