@@ -1,11 +1,12 @@
 import mongoose from "mongoose";
-const {Schema} = mongoose;
 
-const messageSchema = new Schema({
+const messageSchema = new mongoose.Schema({
   text: { type: String, required: true },
-  createdAt: { type: Date, default: Date.now },
   username: { type: String, required: true },
+  // Accept both naming conventions used by message API clients.
+  message: { type: String },
+  user: { type: String },
+  createdAt: { type: Date, default: Date.now }
 });
 
-const Message = mongoose.model('Message', messageSchema);
-export default Message;
+export default mongoose.model("Message", messageSchema);
